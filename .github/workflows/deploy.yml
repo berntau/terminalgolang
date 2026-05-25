@@ -17,10 +17,23 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
+      - name: Validate deploy envs
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          test -n "$DEPLOY_HOST" || (echo "DEPLOY_HOST vazio" && exit 1)
+          test -n "$DEPLOY_PORT" || (echo "DEPLOY_PORT vazio" && exit 1)
+          test -n "$DEPLOY_USER" || (echo "DEPLOY_USER vazio" && exit 1)
+          test -n "$DEPLOY_PATH" || (echo "DEPLOY_PATH vazio" && exit 1)
+          echo "Variáveis carregadas."
+
       - name: Trust deploy host
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PORT: 22
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
@@ -28,15 +41,15 @@ jobs:
       - name: Update containers
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PORT: 22
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "
+          ssh -p "$DEPLOY_PORT" "${DEPLOY_USER}@${DEPLOY_HOST}" << EOF
             set -e
-            cd '$DEPLOY_PATH'
+            cd "$DEPLOY_PATH"
             git fetch origin main
             git reset --hard origin/main
             docker compose up -d --build --remove-orphans
             docker image prune -f
-          "
+          EOF
