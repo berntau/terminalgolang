@@ -1,5 +1,7 @@
 package curriculo
 
+import "os"
+
 type Config struct {
 	Port     string
 	Env      string
@@ -8,8 +10,16 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		Port:     "8080",
-		Env:      "development",
-		DataPath: "internal/curriculo/data/resume.json",
+		Port:     getEnv("PORT", "8080"),
+		Env:      getEnv("APP_ENV", "development"),
+		DataPath: getEnv("DATA_PATH", "internal/curriculo/data/resume.json"),
 	}
+}
+
+func getEnv(key, fallback string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return fallback
+	}
+	return value
 }

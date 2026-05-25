@@ -1,5 +1,6 @@
 # Binário gerado pelo go build
 curriculo-terminal
+server
 
 # Variáveis de ambiente (futuramente)
 .env
