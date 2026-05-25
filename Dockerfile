@@ -1,27 +1,34 @@
-FROM golang:alpine as builder
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+
+COPY frontend/package*.json ./
+RUN npm ci
+
+COPY frontend/ ./
+RUN npm run build
+
+FROM golang:alpine AS builder
 
 RUN apk update && apk add --no-cache git
 
 WORKDIR /app
 
-COPY go.mod ./
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Download all dependencies.
-RUN go mod download 
-
-# Copy the source from the current directory to the Working Directory inside the container
-ADD . .
-
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/server
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+WORKDIR /app
 
 COPY --from=builder /app/main .
+COPY --from=builder /app/internal/curriculo/data ./internal/curriculo/data
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-# Expose port 8080 to the outside world
 EXPOSE 8080
 
 CMD ["./main"]

@@ -27,7 +27,7 @@ async function submitCommand() {
   isLoading.value = true
 
   try {
-    const response = await fetch('/api/command', {
+    const response = await fetch(`api/command`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
