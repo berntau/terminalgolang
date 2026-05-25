@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"log"
 
 	"github.com/berntau/curriculo-terminal/internal/curriculo"
 	"github.com/gin-gonic/gin"
@@ -9,15 +9,16 @@ import (
 
 func main() {
 	r := gin.Default()
+	config := curriculo.NewConfig()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	// dependencias
+	service := curriculo.NewResumeService()
+	handler := curriculo.NewResumeHTTPHandler(service)
 
-	handler := curriculo.NewResumeHTTPHandler(curriculo.NewResumeService())
-	r.GET("/api/resume", handler.GetResume)
+	//rotas
+	r.GET("/resume", handler.GetResume)
 
-	r.Run()
+	log.Printf("Servidor rodando http://localhost:%s", config.Port)
+	r.Run(":" + config.Port)
+
 }

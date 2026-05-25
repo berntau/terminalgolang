@@ -1,0 +1,8 @@
+# Binário gerado pelo go build
+curriculo-terminal
+
+# Variáveis de ambiente (futuramente)
+.env
+
+# Dependências baixadas (o go.sum já versiona isso)
+vendor/
