@@ -8,17 +8,20 @@ import (
 )
 
 func main() {
-	r := gin.Default()
 	config := curriculo.NewConfig()
 
-	// dependencias
-	service := curriculo.NewResumeService()
-	handler := curriculo.NewResumeHTTPHandler(service)
+	service, err := curriculo.NewResumeService(config.DataPath)
+	if err != nil {
+		log.Fatalf("falha ao iniciar serviço: %v", err)
+	}
 
-	//rotas
-	r.GET("/resume", handler.GetResume)
+	handler := curriculo.NewResumeHandler(service)
 
-	log.Printf("Servidor rodando http://localhost:%s", config.Port)
+	r := gin.Default()
+
+	// main.go agora só monta — não conhece as rotas
+	curriculo.RegistrarRotas(r, handler)
+
+	log.Printf("Servidor rodando em http://localhost:%s", config.Port)
 	r.Run(":" + config.Port)
-
 }

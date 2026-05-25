@@ -1,27 +1,54 @@
 package curriculo
 
-import "time"
-
-// Em Go, campos com letra MAIÚSCULA são exportados (públicos)
-// campos com letra minúscula são privados ao pacote
-type Resume struct {
-	Name      string    `json:"name"`
-	Bio       string    `json:"bio"`
-	Location  string    `json:"location"`
-	Email     string    `json:"email"`
-	Github    string    `json:"github"`
-	CreatedAt time.Time `json:"created_at"`
+type Contact struct {
+	Email    string `json:"email"`
+	Github   string `json:"github"`
+	Linkedin string `json:"linkedin"`
 }
 
-// Sem banco de dados por enquanto — dados em memória
-// Isso é uma função construtora por convenção em Go (New + NomeDaStruct)
-func NewResume() Resume {
-	return Resume{
-		Name:      "Tauã Bernardo",
-		Bio:       "Desenvolvedor de software com experiência em Go e Java.",
-		Location:  "São Paulo, Brasil",
-		Email:     "taua.bernardo@example.com",
-		Github:    "https://github.com/taua-bernardo",
-		CreatedAt: time.Now(),
-	}
+type Skill struct {
+	Category string   `json:"category"`
+	Items    []string `json:"items"`
+}
+
+type Experience struct {
+	Company     string `json:"company"`
+	Role        string `json:"role"`
+	Description string `json:"description"`
+	StartDate   string `json:"start_date"`
+	EndDate     string `json:"end_date"`
+	Current     bool   `json:"current"`
+}
+
+type Education struct {
+	Institution string `json:"institution"`
+	Degree      string `json:"degree"`
+	Field       string `json:"field"`
+	Year        int    `json:"year"`
+}
+
+type Resume struct {
+	Name       string       `json:"name"`
+	Bio        string       `json:"bio"`
+	Location   string       `json:"location"`
+	Contact    Contact      `json:"contact"`
+	Skills     []Skill      `json:"skills"`
+	Experience []Experience `json:"experience"`
+	Education  []Education  `json:"education"`
+}
+
+// Command representa um comando do terminal
+// Handler é uma função guardada como valor — não existe isso em Java sem interface
+type Command struct {
+	Name        string
+	Description string
+	Handler     func() string // função sem parâmetros que retorna string
+}
+
+type CommandRequest struct {
+	Command string `json:"command" binding:"required"`
+}
+
+type CommandResponse struct {
+	Output string `json:"output"`
 }

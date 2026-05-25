@@ -1,26 +1,54 @@
 package curriculo
 
-// ResumeService representa a camada de serviço da funcionalidade de currículo.
-// A responsabilidade dessa camada é concentrar a lógica da aplicação,
-// deixando o handler focado apenas em HTTP.
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
+
 type ResumeService struct {
-	// Aqui o service mantém em memória os dados do currículo.
 	resume Resume
 }
 
-// NewResumeService cria e devolve uma nova instância do service.
-// Neste projeto, ele já inicializa o campo resume chamando NewResume().
-func NewResumeService() *ResumeService {
-	return &ResumeService{
-		resume: NewResume(),
+func NewResumeService(dataPath string) (*ResumeService, error) {
+	resume, err := loadFromJSON(dataPath)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao carregar currículo: %w", err)
 	}
+	return &ResumeService{resume: resume}, nil
 }
 
-// GetResume devolve o currículo armazenado dentro do service.
-// O (s *ResumeService) é o receiver do método, ou seja,
-// indica que essa função pertence à struct ResumeService.
-// Hoje ela apenas retorna um dado em memória, mas no futuro
-// poderia buscar essas informações em banco, arquivo ou API externa.
 func (s *ResumeService) GetResume() Resume {
 	return s.resume
+}
+
+// Métodos específicos por recurso
+func (s *ResumeService) GetSkills() []Skill {
+	return s.resume.Skills
+}
+
+func (s *ResumeService) GetExperience() []Experience {
+	return s.resume.Experience
+}
+
+func (s *ResumeService) GetEducation() []Education {
+	return s.resume.Education
+}
+
+func (s *ResumeService) GetContact() Contact {
+	return s.resume.Contact
+}
+
+func loadFromJSON(path string) (Resume, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return Resume{}, fmt.Errorf("erro ao ler arquivo '%s': %w", path, err)
+	}
+
+	var resume Resume
+	if err := json.Unmarshal(data, &resume); err != nil {
+		return Resume{}, fmt.Errorf("erro ao parsear JSON: %w", err)
+	}
+
+	return resume, nil
 }

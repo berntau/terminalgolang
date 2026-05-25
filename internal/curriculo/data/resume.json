@@ -1,0 +1,35 @@
+{
+  "name": "Bernardo",
+  "bio": "Desenvolvedor Júnior na CODATA com foco em backend, manutenção de sistemas legados, desenvolvimento de APIs, automações e arquitetura backend.",
+  "location": "João Pessoa, PB, Brazil",
+  "contact": {
+    "email": "",
+    "github": "github.com/berntau",
+    "linkedin": "linkedin.com/in/tauabernardo"
+  },
+  "skills": [
+    {
+      "category": "Java",
+      "items": ["Java", "Legacy Java", "Spring Boot", "JPA", "REST APIs", "Enterprise Backend"]
+    },
+    {
+      "category": "Backend",
+      "items": ["Django", "PostgreSQL", "MySQL", "Docker", "Keycloak", "JWT", "OAuth2"]
+    },
+    {
+      "category": "Automation & Integrations",
+      "items": ["Python", "Power Automate", "n8n"]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Companhia de Processamento de Dados da Paraíba - CODATA",
+      "role": "Desenvolvedor Júnior",
+      "description": "Atuação em desenvolvimento backend, manutenção de sistemas legados, evolução de serviços e construção de APIs.",
+      "start_date": "",
+      "end_date": "",
+      "current": true
+    }
+  ],
+  "education": []
+}
