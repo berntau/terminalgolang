@@ -6,8 +6,8 @@ import (
 	"github.com/berntau/curriculo-terminal/internal/curriculo"
 	"github.com/gin-gonic/gin"
 )
-func main() {
 
+func main() {
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -16,9 +16,8 @@ func main() {
 		})
 	})
 
-	handler := curriculo.NewResumeHandler(curriculo.NewResumeService())
+	handler := curriculo.NewResumeHTTPHandler(curriculo.NewResumeService())
 	r.GET("/api/resume", handler.GetResume)
 
 	r.Run()
-
 }
